@@ -148,7 +148,6 @@ match, agreed with the Captain/Manager. No individual save events needed.
 intentional. Appearance (any minutes) and the 60-minute point are two separate, stackable
 rewards — a full 90 gets both, an 88th-minute cameo gets only the appearance point.
 
-
 **Q7 — Can the rules change mid-season?** ✅ **Answered: no.** The ruleset is locked for the whole
 season once it starts. Simplifies the engine considerably — no retroactive recompute logic needed.
 
