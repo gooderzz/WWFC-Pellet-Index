@@ -165,7 +165,7 @@ Vercel Dashboard scoping:
 ```
 cursor/*  or feature branches  →  Vercel Preview (ephemeral URL, staging DB)
 staging                        →  Vercel custom env "staging" (stable URL, staging DB)
-main                            →  Vercel Production (live URL, production DB)
+main                           →  Vercel Production (live URL, production DB)
 ```
 
 Do not merge unreviewed work to `main`. Club-facing checks happen on the staging URL first.
