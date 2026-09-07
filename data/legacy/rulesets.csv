@@ -1,0 +1,64 @@
+season,event,GK,DF,MD,FW,notes
+2023/24,Appearance,1,1,1,1,
+2023/24,60 mins,1,1,1,1,
+2023/24,Def Inf,1,1,0,0,
+2023/24,Conceded 1,0,0,0,0,
+2023/24,Conceded 2,-1,-1,,,Defensive positions only
+2023/24,Conceded 3+,-2,-2,,,Defensive positions only
+2023/24,Clean sheet,8,8,4,2,Half value if under 60 minutes
+2023/24,Assist,3,3,3,3,
+2023/24,Goal,6,6,5,4,
+2023/24,Saves per 3,1,,,,
+2023/24,Pen save,4,,,,
+2023/24,Pen miss,-2,-2,-2,-2,
+2023/24,Yellow,-1,-1,-1,-1,
+2023/24,Red,-3,-3,-3,-3,
+2023/24,Own goal,-2,-2,-2,-2,
+2023/24,Drop out / no show,-2,-2,-2,-2,
+2023/24,Bonus 1st,3,3,3,3,
+2023/24,Bonus 2nd,2,2,2,2,
+2023/24,Bonus 3rd,1,1,1,1,
+2024/25,Appearance,1,1,1,1,
+2024/25,60 mins,1,1,1,1,
+2024/25,Def Inf,1,1,0,0,
+2024/25,Conceded 1,0,0,0,0,
+2024/25,Conceded 2,-1,-1,,,Defensive positions only
+2024/25,Conceded 3+,-2,-2,,,Defensive positions only
+2024/25,Clean sheet,8,8,4,2,Half value if under 60 minutes
+2024/25,Assist,3,3,3,3,
+2024/25,Goal,6,6,5,4,
+2024/25,Saves per 3,1,,,,
+2024/25,Pen save,4,,,,
+2024/25,Pen miss,-2,-2,-2,-2,
+2024/25,Yellow,-1,-1,-1,-1,
+2024/25,Red,-3,-3,-3,-3,
+2024/25,Own goal,-2,-2,-2,-2,
+2024/25,Drop out / no show,-5,-5,-5,-5,Increased from -2
+2024/25,Bonus 1st,3,3,3,3,
+2024/25,Bonus 2nd,2,2,2,2,
+2024/25,Bonus 3rd,1,1,1,1,
+2024/25,Shootout pen scored,1,1,1,1,New this season
+2024/25,Shootout pen missed/saved,-1,-1,-1,-1,New this season
+2024/25,Shootout pen save,1,,,,New this season; per save
+2025/26,Appearance,1,1,1,1,
+2025/26,60 mins,1,1,1,1,
+2025/26,Def Inf,1,1,0,0,
+2025/26,Conceded 1,0,0,0,0,
+2025/26,Conceded 2,-1,-1,,,Defensive positions only
+2025/26,Conceded 3+,-2,-2,,,Defensive positions only
+2025/26,Clean sheet,8,8,4,2,Half value if under 60 minutes
+2025/26,Assist,5,3,3,3,GK assist increased from 3
+2025/26,Goal,6,6,5,4,
+2025/26,Saves per 3,1,,,,
+2025/26,Pen save,4,,,,
+2025/26,Pen miss,-2,-2,-2,-2,
+2025/26,Yellow,-1,-1,-1,-1,
+2025/26,Red,-3,-3,-3,-3,
+2025/26,Own goal,-2,-2,-2,-2,
+2025/26,On the day drop out / no show,-5,-5,-5,-5,Relabelled to emphasise same-day withdrawal
+2025/26,Bonus 1st,3,3,3,3,
+2025/26,Bonus 2nd,2,2,2,2,
+2025/26,Bonus 3rd,1,1,1,1,
+2025/26,Shootout pen scored,1,1,1,1,
+2025/26,Shootout pen not scored,-1,-1,-1,-1,
+2025/26,Shootout pen save,1,,,,Per save
