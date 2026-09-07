@@ -29,28 +29,66 @@ side of shared ownership doesn't have this problem.
 
 | Resource | Status | Detail |
 | --- | --- | --- |
-| GitHub repository | ✅ Created by William | [`gooderzz/WWFC-Pellet-Index`](https://github.com/gooderzz/WWFC-Pellet-Index) — content import in progress (7 Sep 2026), pushed via the GitHub API since no git-credential path to github.com exists in this shell session |
+| GitHub repository | ✅ Created by William | [`gooderzz/WWFC-Pellet-Index`](https://github.com/gooderzz/WWFC-Pellet-Index), docs mirrored via the GitHub API (no git-credential path to github.com from this shell session) |
+| GitHub branch `staging` | ✅ Created 7 Sep 2026 | Cut from `main` via the GitHub API. Nothing tracks it yet — no app code exists to deploy. |
 | Vercel team | ✅ Exists | `williamgoodwin-myyahoocoms-projects`, Hobby plan, confirmed 7 Sep 2026 |
-| Vercel project (this app) | ❌ Not created yet | Waiting on the GitHub import to finish so it can be git-linked on creation, per the promotion path below |
+| Vercel project | ✅ Created by William 7 Sep 2026 | `wwfc-pellet-index` (`prj_qjXvMwUyPEGsqvTtQq2m9Zbqclf3`), git-linked to `gooderzz/WWFC-Pellet-Index`. First (empty) deploy is `READY` but `framework: null` — expected, there is no Next.js app in the repo yet, just docs. |
+| Vercel deployment protection | ✅ Fixed 7 Sep 2026 | Was defaulted to Vercel Authentication on **all deployments including Production** (would have put the club behind a Vercel login at the pub). Repointed to **Preview only** via the API — see "Deployment Protection" below. |
+| Vercel custom environments | ❌ N/A on Hobby | Using the **Hobby fallback**: `staging` branch = a Preview deployment, no separate custom-env slug. See "Env vars — exact values" below; it's simpler than the Pro path because Development/Preview/staging-branch all point at the same staging DB anyway. |
+| Vercel env vars | ❌ Not set yet | **Blocking gap, needs William** — no Vercel MCP tool or CLI token exists in this agent session to set them by API. Exact keys/values to paste by hand are below. |
 | Supabase organisation | ✅ Exists | "WWFC Pellet Index" (`waqufdoqwnbrlyownopn`), upgraded off Free by William to lift the account-wide 2-project cap |
-| Supabase project — staging | ✅ Created 7 Sep 2026 | `ww-pellet-staging` (ref `serzpztmxjozztzickqz`), region `eu-west-2` (London, matches Vercel's `lhr1`), `ACTIVE_HEALTHY` |
-| Supabase project — production | ✅ Created 7 Sep 2026 | `ww-pellet-prod` (ref `rftabjjqtazpmilmajpw`), region `eu-west-2`, `ACTIVE_HEALTHY`, **$10/month** — William confirmed this cost directly by creating it once the account was upgraded |
+| Supabase project — staging | ✅ Created 7 Sep 2026 | `ww-pellet-staging` (ref `serzpztmxjozztzickqz`), region `eu-west-2` (London), `ACTIVE_HEALTHY` |
+| Supabase project — production | ✅ Created 7 Sep 2026 | `ww-pellet-prod` (ref `rftabjjqtazpmilmajpw`), region `eu-west-2`, `ACTIVE_HEALTHY`, **$10/month** |
 
-**Database passwords:** set by William, shared once in chat, **not committed to this repo** —
-they live only in Vercel's environment variables once wired up. If either needs rotating later,
-that's a Supabase dashboard action (Project Settings → Database) followed by updating the
-corresponding Vercel env var; nothing in the schema or app code depends on the literal value.
+**Database passwords:** set by William when each project was created, **not committed to this
+repo**, and not recoverable by this agent from Supabase's API (project creation is the only time
+the password is shown). They only ever need to exist as pasted values inside the Vercel
+dashboard's Environment Variables screen — see the exact templates below, which need just the
+two passwords dropped in. If a password is forgotten, reset it from the Supabase dashboard
+(Project Settings → Database → Reset database password) and update the corresponding Vercel var;
+nothing in the schema or app code depends on the literal value.
 
 **⚠️ One unverified detail:** the exact shared-pooler hostname shard (`aws-0-eu-west-2` vs.
 `aws-1-...` etc.) hasn't been visually confirmed against either project's dashboard connection
-string — `connections.md`'s documented default (`aws-0-<region>.pooler.supabase.com`) was used
-to build the Vercel env vars. **Verify this against the actual "Connect" panel in each Supabase
-project before the first real `drizzle-kit migrate` run** — if it's wrong, migrations will fail
-to connect with a clear DNS/connection error, not silently misbehave.
+string — `connections.md`'s documented default (`aws-0-<region>.pooler.supabase.com`) is used
+below. **Verify this against the actual "Connect" panel in each Supabase project** — if it's
+wrong, migrations will fail to connect with a clear DNS/connection error, not silently misbehave.
 
-Env vars, migrations and seeding for both projects are still outstanding beyond what's noted
-above — nothing has been run against either database yet. Treat both as empty, freshly
-provisioned Postgres instances.
+Env vars, migrations and seeding for both projects are still outstanding — nothing has been run
+against either database yet. Treat both as empty, freshly provisioned Postgres instances.
+
+### Env vars — exact values to paste into Vercel now (Hobby)
+
+There is no Vercel API/CLI credential available to this agent in this session (no MCP tool sets
+project env vars; no `VERCEL_TOKEN` / CLI login is present in this shell). This is a five-minute
+manual step: **Vercel dashboard → `wwfc-pellet-index` → Settings → Environment Variables → Add
+New**, once per row below, ticking the environments listed.
+
+Because Development, Preview and the `staging` branch all point at the **same** staging
+database (see "Vercel Dashboard scoping" further down), there is no need for branch-specific
+overrides on Hobby — just two value-sets per key: **Development + Preview**, and **Production**.
+
+| Key | Environments | Value |
+| --- | --- | --- |
+| `WW_ENV` | Development, Preview | `staging` |
+| `WW_ENV` | Production | `production` |
+| `DATABASE_URL` | Development, Preview | `postgresql://postgres.serzpztmxjozztzickqz:<STAGING_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:6543/postgres` |
+| `DATABASE_URL_SESSION` | Development, Preview | `postgresql://postgres.serzpztmxjozztzickqz:<STAGING_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:5432/postgres` |
+| `DATABASE_URL` | Production | `postgresql://postgres.rftabjjqtazpmilmajpw:<PROD_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:6543/postgres` |
+| `DATABASE_URL_SESSION` | Production | `postgresql://postgres.rftabjjqtazpmilmajpw:<PROD_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:5432/postgres` |
+| `ADMIN_PASSPHRASE` | Development, Preview | a memorable **test** phrase, e.g. `test-pellet-admin` — never the real one |
+| `ADMIN_PASSPHRASE` | Production | William's real admin phrase (chosen by the club, not this agent — see ADR-0005: memorable > complex) |
+| `VIEWER_PASSPHRASE` | Development, Preview | leave blank (public) or a test phrase |
+| `VIEWER_PASSPHRASE` | Production | club's choice, or leave blank for fully public |
+| `SESSION_SECRET` | Development, Preview | `4210c1411299329b71682ae4ea08ecfbd1c7e2c86c762f19b355764fe6d26026` |
+| `SESSION_SECRET` | Production | `7cd33727ecb130df710041e8b7def33ace0b7df86cf0468da6cfbfbeaa27ff94` |
+
+Both `SESSION_SECRET` values above were generated fresh by this agent (`openssl rand -hex 32`)
+and are safe to use as-is — they're meaningless without the cookie they sign, unlike the
+passphrases, which need to actually be memorable for humans at a pub.
+
+Only the two `<..._DB_PASSWORD>` placeholders and the two real passphrases need a human. Once
+these are pasted in, `vercel env pull` will work for local dev the moment Stream A's app exists.
 **Audience:** agents and humans spinning up a machine or a deploy
 **Sources:** [Vercel Environments](https://vercel.com/docs/deployments/environments),
 [Custom environments](https://vercel.com/docs/deployments/environments#custom-environments),
@@ -313,11 +351,16 @@ vercel deploy --target=staging
 
 Custom environments are **Pro/Enterprise** (Pro = 1 per project). On Hobby:
 
-1. Keep a `staging` git branch.
-2. Settings → Domains → add a hostname and **reassign it from Production to branch `staging`**.
-3. Settings → Environment Variables → add the staging DB URLs scoped to **Preview** + git
-   branch `staging` (branch-specific vars override).
-4. Do not also put those values on Production.
+1. Keep a `staging` git branch. **✅ Created 7 Sep 2026**, cut from `main`.
+2. No branch-specific env var scoping is actually needed: per "Env vars per world" above,
+   Development, every Preview (PR or `staging` branch alike), all point at the **same** staging
+   database. Just set Development + Preview to the staging values — the `staging` branch's
+   deploy is a Preview deploy and inherits them automatically.
+3. Optional, not required for v1: Settings → Domains → add a hostname and reassign it from
+   Production to branch `staging`, for a stable memorable URL instead of the auto-generated
+   `wwfc-pellet-index-git-staging-*.vercel.app`. Skip this until the club actually wants to
+   bookmark a staging link.
+4. Do not put staging values on the Production target.
 
 Same two-database rule. Only the Vercel UI differs.
 
@@ -330,12 +373,17 @@ Same two-database rule. Only the Vercel UI differs.
 
 ### Deployment Protection
 
-Turn **Vercel Authentication** on for Preview and the `staging` custom env so draft URLs are
-not a Google result. Share the Vercel bypass with Tom, Shane and William.
+**✅ Set 7 Sep 2026.** Vercel Authentication (SSO) is scoped to **Preview only** on
+`wwfc-pellet-index` — this includes the `staging` branch's deploys, since Hobby has no separate
+custom-env target. It started defaulted to "all deployments including Production," which would
+have put the club behind a Vercel login at the pub; that's now fixed via the deployment
+protection API.
 
-Production may stay reachable without Vercel login: the Index can be public, and
-`VIEWER_PASSPHRASE` is the product gate if the club wants one. Do not require Vercel SSO on
-Sunday at the pub.
+Production stays reachable without a Vercel login: the Index can be public, and
+`VIEWER_PASSPHRASE` is the product gate if the club wants one. Do not turn Vercel SSO back on
+for Production — that would require a Vercel account (not a club passphrase) on Sunday at the
+pub. Password Protection (a separate Vercel feature, distinct from Vercel Authentication) is
+off; the app's own `VIEWER_PASSPHRASE` replaces it once Stream A exists.
 
 ---
 
