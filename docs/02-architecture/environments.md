@@ -34,61 +34,55 @@ side of shared ownership doesn't have this problem.
 | Vercel team | ✅ Exists | `williamgoodwin-myyahoocoms-projects`, Hobby plan, confirmed 7 Sep 2026 |
 | Vercel project | ✅ Created by William 7 Sep 2026 | `wwfc-pellet-index` (`prj_qjXvMwUyPEGsqvTtQq2m9Zbqclf3`), git-linked to `gooderzz/WWFC-Pellet-Index`. First (empty) deploy is `READY` but `framework: null` — expected, there is no Next.js app in the repo yet, just docs. |
 | Vercel deployment protection | ✅ Fixed 7 Sep 2026 | Was defaulted to Vercel Authentication on **all deployments including Production** (would have put the club behind a Vercel login at the pub). Repointed to **Preview only** via the API — see "Deployment Protection" below. |
-| Vercel custom environments | ❌ N/A on Hobby | Using the **Hobby fallback**: `staging` branch = a Preview deployment, no separate custom-env slug. See "Env vars — exact values" below; it's simpler than the Pro path because Development/Preview/staging-branch all point at the same staging DB anyway. |
-| Vercel env vars | ❌ Not set yet | **Blocking gap, needs William** — no Vercel MCP tool or CLI token exists in this agent session to set them by API. Exact keys/values to paste by hand are below. |
+| Vercel custom environments | ❌ N/A on Hobby | Using the **Hobby fallback**: `staging` branch = a Preview deployment, no separate custom-env slug. Development/Preview/staging-branch all point at the same staging DB. |
+| Vercel env vars | ✅ Set 8 Sep 2026 | All 11 rows below created via the Vercel API (a project-scoped `vcp_...` token, used once in an agent shell session and not persisted anywhere). William supplied both DB passwords and the real production passphrases directly; this agent never had standing Vercel write access. |
 | Supabase organisation | ✅ Exists | "WWFC Pellet Index" (`waqufdoqwnbrlyownopn`), upgraded off Free by William to lift the account-wide 2-project cap |
 | Supabase project — staging | ✅ Created 7 Sep 2026 | `ww-pellet-staging` (ref `serzpztmxjozztzickqz`), region `eu-west-2` (London), `ACTIVE_HEALTHY` |
 | Supabase project — production | ✅ Created 7 Sep 2026 | `ww-pellet-prod` (ref `rftabjjqtazpmilmajpw`), region `eu-west-2`, `ACTIVE_HEALTHY`, **$10/month** |
 
 **Database passwords:** set by William when each project was created, **not committed to this
 repo**, and not recoverable by this agent from Supabase's API (project creation is the only time
-the password is shown). They only ever need to exist as pasted values inside the Vercel
-dashboard's Environment Variables screen — see the exact templates below, which need just the
-two passwords dropped in. If a password is forgotten, reset it from the Supabase dashboard
-(Project Settings → Database → Reset database password) and update the corresponding Vercel var;
-nothing in the schema or app code depends on the literal value.
+the password is shown). They exist only as encrypted values inside Vercel's Environment
+Variables (write-only via the API/dashboard once set). If a password is forgotten, reset it from
+the Supabase dashboard (Project Settings → Database → Reset database password) and update the
+corresponding Vercel var; nothing in the schema or app code depends on the literal value.
 
-**⚠️ One unverified detail:** the exact shared-pooler hostname shard (`aws-0-eu-west-2` vs.
-`aws-1-...` etc.) hasn't been visually confirmed against either project's dashboard connection
-string — `connections.md`'s documented default (`aws-0-<region>.pooler.supabase.com`) is used
-below. **Verify this against the actual "Connect" panel in each Supabase project** — if it's
-wrong, migrations will fail to connect with a clear DNS/connection error, not silently misbehave.
+**✅ Pooler shard verified 8 Sep 2026** (not just assumed): both projects were confirmed live on
+`aws-0-eu-west-2.pooler.supabase.com`, on both the session (`:5432`) and transaction (`:6543`)
+ports, by connecting directly with `psql` using the real passwords. `aws-1-eu-west-2` was tried
+too, as a sanity check, and correctly rejected the staging tenant — confirming `aws-0` is right,
+not a guess from `connections.md`'s documented default.
 
-Env vars, migrations and seeding for both projects are still outstanding — nothing has been run
-against either database yet. Treat both as empty, freshly provisioned Postgres instances.
+Env vars are set (see below); migrations and seeding for both projects are still outstanding —
+nothing has been run against either database's schema yet. Treat both as empty Postgres
+instances with the correct network path now proven end-to-end.
 
-### Env vars — exact values to paste into Vercel now (Hobby)
+### Env vars — set on Vercel (8 Sep 2026)
 
-There is no Vercel API/CLI credential available to this agent in this session (no MCP tool sets
-project env vars; no `VERCEL_TOKEN` / CLI login is present in this shell). This is a five-minute
-manual step: **Vercel dashboard → `wwfc-pellet-index` → Settings → Environment Variables → Add
-New**, once per row below, ticking the environments listed.
-
-Because Development, Preview and the `staging` branch all point at the **same** staging
-database (see "Vercel Dashboard scoping" further down), there is no need for branch-specific
-overrides on Hobby — just two value-sets per key: **Development + Preview**, and **Production**.
+All 11 rows now exist on `wwfc-pellet-index` (2 values per key — Development+Preview vs.
+Production — except `VIEWER_PASSPHRASE`, which is intentionally Production-only, leaving
+Development/Preview publicly viewable with no passphrase):
 
 | Key | Environments | Value |
 | --- | --- | --- |
 | `WW_ENV` | Development, Preview | `staging` |
 | `WW_ENV` | Production | `production` |
-| `DATABASE_URL` | Development, Preview | `postgresql://postgres.serzpztmxjozztzickqz:<STAGING_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:6543/postgres` |
-| `DATABASE_URL_SESSION` | Development, Preview | `postgresql://postgres.serzpztmxjozztzickqz:<STAGING_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:5432/postgres` |
-| `DATABASE_URL` | Production | `postgresql://postgres.rftabjjqtazpmilmajpw:<PROD_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:6543/postgres` |
-| `DATABASE_URL_SESSION` | Production | `postgresql://postgres.rftabjjqtazpmilmajpw:<PROD_DB_PASSWORD>@aws-0-eu-west-2.pooler.supabase.com:5432/postgres` |
-| `ADMIN_PASSPHRASE` | Development, Preview | a memorable **test** phrase, e.g. `test-pellet-admin` — never the real one |
-| `ADMIN_PASSPHRASE` | Production | William's real admin phrase (chosen by the club, not this agent — see ADR-0005: memorable > complex) |
-| `VIEWER_PASSPHRASE` | Development, Preview | leave blank (public) or a test phrase |
-| `VIEWER_PASSPHRASE` | Production | club's choice, or leave blank for fully public |
-| `SESSION_SECRET` | Development, Preview | `4210c1411299329b71682ae4ea08ecfbd1c7e2c86c762f19b355764fe6d26026` |
-| `SESSION_SECRET` | Production | `7cd33727ecb130df710041e8b7def33ace0b7df86cf0468da6cfbfbeaa27ff94` |
+| `DATABASE_URL` | Development, Preview | staging transaction pooler (`ww-pellet-staging`, port 6543) |
+| `DATABASE_URL_SESSION` | Development, Preview | staging session pooler (`ww-pellet-staging`, port 5432) |
+| `DATABASE_URL` | Production | production transaction pooler (`ww-pellet-prod`, port 6543) |
+| `DATABASE_URL_SESSION` | Production | production session pooler (`ww-pellet-prod`, port 5432) |
+| `ADMIN_PASSPHRASE` | Development, Preview | test-only phrase, distinct from the real one |
+| `ADMIN_PASSPHRASE` | Production | William's real admin phrase |
+| `VIEWER_PASSPHRASE` | Production only | the club's real viewer phrase |
+| `SESSION_SECRET` | Development, Preview | agent-generated random secret (`openssl rand -hex 32`) |
+| `SESSION_SECRET` | Production | a **different** agent-generated random secret |
 
-Both `SESSION_SECRET` values above were generated fresh by this agent (`openssl rand -hex 32`)
-and are safe to use as-is — they're meaningless without the cookie they sign, unlike the
-passphrases, which need to actually be memorable for humans at a pub.
-
-Only the two `<..._DB_PASSWORD>` placeholders and the two real passphrases need a human. Once
-these are pasted in, `vercel env pull` will work for local dev the moment Stream A's app exists.
+All values were written via the Vercel API using a **project-scoped** personal access token
+(`vcp_...`, scoped only to `wwfc-pellet-index`, not the full account) that William generated,
+pasted once into an agent shell session, and used immediately — it was never written to a file,
+committed, or reused across sessions. The two Supabase passwords and the two real passphrases
+came directly from William; this agent generated only the two `SESSION_SECRET` values.
+`vercel env pull` will work for local dev the moment Stream A's app exists.
 **Audience:** agents and humans spinning up a machine or a deploy
 **Sources:** [Vercel Environments](https://vercel.com/docs/deployments/environments),
 [Custom environments](https://vercel.com/docs/deployments/environments#custom-environments),
