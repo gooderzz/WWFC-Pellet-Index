@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/*
+ * Token file. This is the ONLY place a hex value, a font-size, or a radius
+ * is allowed to be declared. See docs/05-design/DESIGN.md — values here are
+ * exact and are not suggestions.
+ */
+
+:root {
+  /* Colour — core */
+  --ww-yellow: #ffd400;
+  --ww-yellow-deep: #e8be00;
+  --ww-navy: #0b1b3f;
+  --ww-navy-700: #132650;
+  --ww-navy-600: #1b3163;
+  --ww-paper: #f7f4ed;
+  --ww-black: #111111;
+
+  /* Colour — support */
+  --ww-chalk: #e8e2d5;
+  --ww-ink-muted: #4a5468;
+
+  /* Colour — result semantics */
+  --ww-win: #1b7f4b;
+  --ww-draw: #5f6875;
+  --ww-loss: #c0342b;
+
+  /* Semantic surfaces — these are what components consume */
+  --surface-canvas: var(--ww-paper);
+  --surface-raised: #ffffff;
+  --surface-recessed: var(--ww-chalk);
+  --surface-feature: var(--ww-navy);
+  --surface-ledger: var(--ww-black);
+  --ink: var(--ww-navy);
+  --ink-muted: var(--ww-ink-muted);
+
+  /* Type families — wired to next/font variables in app/layout.tsx */
+  --font-display: var(--font-archivo-expanded), var(--font-archivo), system-ui, sans-serif;
+  --font-text: var(--font-archivo), system-ui, sans-serif;
+  --font-ledger: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  /* Type scale — size / line-height / tracking */
+  --text-score-hero: 128px;
+  --leading-score-hero: 0.85;
+  --tracking-score-hero: -0.03em;
+  --text-score: 88px;
+  --leading-score: 0.85;
+  --tracking-score: -0.03em;
+  --text-display: 56px;
+  --leading-display: 1;
+  --tracking-display: -0.02em;
+  --text-h2: 32px;
+  --leading-h2: 1.15;
+  --tracking-h2: -0.02em;
+  --text-h3: 24px;
+  --leading-h3: 1.25;
+  --tracking-h3: 0em;
+  --text-lead: 20px;
+  --leading-lead: 1.45;
+  --tracking-lead: 0em;
+  --text-body: 16px;
+  --leading-body: 1.55;
+  --tracking-body: 0em;
+  --text-small: 14px;
+  --leading-small: 1.45;
+  --tracking-small: 0em;
+  --text-eyebrow: 12px;
+  --leading-eyebrow: 1.2;
+  --tracking-eyebrow: 0.08em;
+
+  /* Space */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+
+  /* Layout */
+  --page-max-width: 1120px;
+  --reading-max-width: 720px;
+  --section-gap: 64px;
+  --card-padding: 24px;
+  --row-padding-block: 12px;
+  --tabbar-height: 64px;
+
+  /* Radius — two registers, nothing between */
+  --radius-surface: 0px;
+  --radius-stamp: 2px;
+  --radius-action: 999px;
+
+  /* Rules */
+  --rule-hair: 1px solid var(--ww-chalk);
+  --rule-ink: 1px solid var(--ww-navy);
+  --rule-total: 2px solid var(--ww-navy);
+
+  /* The only shadow in the product */
+  --shadow-overlay:
+    0 24px 48px -12px rgb(11 27 63 / 0.28), 0 2px 8px -2px rgb(11 27 63 / 0.16);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-disclosure: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-disclosure: 180ms;
+}
+
+[data-theme="dark"] {
+  --surface-canvas: var(--ww-navy);
+  --surface-raised: var(--ww-navy-700);
+  --surface-recessed: var(--ww-navy-600);
+  --surface-feature: var(--ww-navy-700);
+  --ink: var(--ww-paper);
+  --ink-muted: #9aa5bd;
+}
+
+@theme inline {
+  --color-yellow: var(--ww-yellow);
+  --color-yellow-deep: var(--ww-yellow-deep);
+  --color-navy: var(--ww-navy);
+  --color-navy-700: var(--ww-navy-700);
+  --color-navy-600: var(--ww-navy-600);
+  --color-paper: var(--ww-paper);
+  --color-chalk: var(--ww-chalk);
+  --color-black: var(--ww-black);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-win: var(--ww-win);
+  --color-draw: var(--ww-draw);
+  --color-loss: var(--ww-loss);
+
+  --font-display: var(--font-display);
+  --font-text: var(--font-text);
+  --font-ledger: var(--font-ledger);
+
+  --radius-surface: var(--radius-surface);
+  --radius-stamp: var(--radius-stamp);
+  --radius-action: var(--radius-action);
+}
+
+body {
+  background: var(--surface-canvas);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+/* Non-negotiable: every figure in a column aligns */
+table,
+.ledger,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Archivo's variable "wdth" axis stands in for "Archivo Expanded" — see
+ * app/layout.tsx. Applied here (not per-component) so no component has to
+ * remember it.
+ */
+.font-display {
+  font-stretch: 125%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
